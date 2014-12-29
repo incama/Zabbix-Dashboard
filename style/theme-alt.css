@@ -1,0 +1,50 @@
+/* ************************************************************** */
+/* ***  Theme css for Zabbix Dashboard                        *** */
+/* ***  Build with my brain, so things could be much better   *** */
+/* ************************************************************** */
+
+/* we use ubuntu clients for our dashboard displays hence the call to the "Ubuntu" font */
+body {font-size: 12px; font-family: Ubuntu, Verdana, Arial;background: #3C3C3C;}
+/* bg-two we used in tests */
+body#bg-one { margin: 40px 0px 0px 10px;}
+body#bg-two {position:relative; margin: 40px 0px 0px 10px;}
+
+.hostbox {width : 157px;	float:left;	margin: 10px 0px 0px 10px; padding: 10px; -webkit-border-radius: 4px; -moz-border-radius: 4px; border-radius: 4px; position: relative; box-shadow: 0px 0px 5px #1E1E1E;}
+
+/* host is ok box */
+.ok {background-color: #4B9C05; border: 1px solid #0D0D0D; color: #FFF;}
+/* host is not ok, "information triggered" */
+.nok1 {background-color: #99CC00; border: 1px solid #0D0D0D;}
+/* host is not ok, "warning triggered" */
+.nok2 {background-color: #F3E427; border: 1px solid #0D0D0D;}
+/* host is not ok, "average triggered" */
+.nok3 {background-color: #FA9321; border: 1px solid #0D0D0D;}
+/* host is not ok, "high triggered" */
+.nok4 {background-color: #E94B16; border: 1px solid #0D0D0D;}
+/* host is not ok, "disaster triggered" */
+.nok5 {background-color: #B10505; border: 1px solid #0D0D0D;}
+
+
+/* Increase Box width with level not ok 4 and 5. I know, hardcoded *sigh* */
+.hostbox.nok4 {width: 345px;}
+.hostbox.nok5 {width: 535px;}
+
+/* futher box markups */
+.title {font-size: 14px;	font-weight: bold; text-align: center; color: #FFF;	padding: 0px 0px 5px 0px;}
+.hostid {font-family: Ubuntu; font-size: 8px; position: absolute; top: 5px; right: 5px; color: #D7D7D7;}
+.nok2 .hostid {color:#232323;} /* more readable text */
+.nok2 .title{color: #232323;} /* more readable text */
+.description {font-family:Ubuntu; margin: 3px 0;	border:none;background: #fff;font-size: 12px;padding: 5px 5px 5px 20px;line-height:145%;word-break: break-all;border-radius: 2px;}
+
+/* created small images that match the trigger color */
+div.description.nok1 {background: #FFF url("../images/nok1.png") no-repeat 5px 5px;  }
+div.description.nok2 {background: #FFF url("../images/nok2.png") no-repeat 5px 5px;  }
+div.description.nok3 {background: #FFF url("../images/nok3.png") no-repeat 5px 5px;  }
+div.description.nok4 {background: #FFF url("../images/nok4.png") no-repeat 5px 5px;  }
+div.description.nok5 {background: #FFF url("../images/nok5.png") no-repeat 5px 5px;  }
+
+div#timestamp {position: absolute; top: -40px; left:10px; z-index:100; padding: 10px; color: #E8E8E8;}
+div#date {font-size: 10px; text-align: center;}
+div#time { font-size: 20px; text-align: center;}
+
+div#sheetname {position: absolute; top: -36px; right: 20px; z-index: 200; font-size: 40px; color: #E8E8E8;}
