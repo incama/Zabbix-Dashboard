@@ -1,8 +1,8 @@
 <?php
-// load the ZabbixApi
+// load the Zabbix Php API which is included in this build (tested on Zabbix v2.2.2)
 require 'lib/php/ZabbixApiAbstract.class.php';
 require 'lib/php/ZabbixApi.class.php';
-// connect to Zabbix API
+// connect to Zabbix Json API
 $api = new ZabbixApi('http://url-to-zabbix-api/zabbix/api_jsonrpc.php', 'user', 'pass');
 // Set Defaults
 $api->setDefaultParams(array(
@@ -14,24 +14,26 @@ $api->setDefaultParams(array(
 <head>
 	<meta charset="UTF-8">
 	<title>Zabbix Dashboard</title>
+	<!-- Let's reset the default style properties -->
 	<link rel="stylesheet" type="text/css" href="style/reset.css" />
 	<link rel="stylesheet" type="text/css" href="style/theme-alt.css" />
+	<!-- added the jQuery library for reloading the page and future features -->
 	<script src="lib/js/jquery-2.1.1.min.js"></script>
 	<!-- added the masonry js so all blocks are better alligned -->
 	<script src="lib/js/masonry.pkgd.min.js"></script>
 	<!-- Removed this temporary because I disliked the look -->
 	<!--<body class="js-masonry"  data-masonry-options='{ "columnWidth": 250, "itemSelector": ".groupbox" }'>-->
 <body id="bg-two">
-<!-- START GET RENDER DATE -->
-
+	
+<!-- START GET RENDER DATE - Which will show date and time of generating this file -->
 <div id="timestamp">
     <div id="date"><?php echo date("d F Y", time()); ?></div>
     <div id="time"><?php echo date("H:i", time()); ?></div>
 </div>
 <!-- END GET RENDER DATE -->
 
-<!-- We could use the HostGroup name here --> 
-<div id="sheetname">Windows 2012</div>
+<!-- We could use the Zabbix HostGroup name here, but would not work in a nice way when using a dozen of hostgroups, yet! So we hardcoded it here. --> 
+<div id="sheetname">Your Group</div>
 
 <?php
 // get hostgroupid with hosts
@@ -50,12 +52,12 @@ $api->setDefaultParams(array(
 
 	if ($hosts) {
     	$count = "0";
-//	echo "<div class=\"groupbox\">"; // again, we dont want to use the groupfunction yet
+//	echo "<div class=\"groupbox\">"; // Again, we dont want to use the groupfunction yet
 //      echo "<div class=\"title\">" . $groupname . "</div>";
 
     // print all host IDs
     		foreach($hosts as $host) {
-			// Check if host is not disabled
+			// Check if host is not disabled, we don't want them!
 			$flaghost = $host->flags;
 
 			if ($flaghost == "0" && $count == "0") {
@@ -82,11 +84,14 @@ $api->setDefaultParams(array(
 	
 				if ($trigger) {
 
-					//Highest Priority error
-					$hostboxprio = $trigger[0]->priority; 
+					// Highest Priority error
+					$hostboxprio = $trigger[0]->priority;
+					//First filter the hosts that are in maintenance and assign the maintenance class if is true
 					if ($maintenance != "0") {
 						echo "<div class=\"hostbox maintenance\">";
-					} else {
+					} 
+					// If hosts are not in maintenance, check for trigger(s) and assign the appropriate class to the box 
+					else {
 						echo "<div class=\"hostbox nok" . $hostboxprio . "\">";
 					}
 					echo "<div class=\"title\">" . $hostname . "</div><div class=\"hostid\">" . $hostid . "</div>";
@@ -96,17 +101,19 @@ $api->setDefaultParams(array(
        	        					$priority = $event->priority;
        							$description = $event->description;
 				
-							// Remove hostname or host.name in description
+					// Remove hostname or host.name in description
 							$search = array('{HOSTNAME}', '{HOST.NAME}');
 							$description = str_replace($search, "", $description);
 				
-							// View
+					// View
        							echo "<div class=\"description nok" . $priority ."\">" . $description . "</div>";
 						} else {
 							break;
 						}		
 					}
-				} else {
+					} 
+					// If there are no trigger(s) for the host found, assign the "ok" class to the box
+					else {
 					echo "<div class=\"hostbox ok\">";
 	       	 		        echo "<div class=\"title\">" . $hostname . "</div><div class=\"hostid\">" . $hostid . "</div>";
 				}
@@ -117,7 +124,7 @@ $api->setDefaultParams(array(
 	}
     }
 ?> 
-<!-- Second piece of js to gracefully reload the page -->
+<!-- Second piece of js to gracefully reload the page (value in ms) -->
 <script>
 	function ReloadPage() {
 	   location.reload();
